@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GUARDIAN - ML Audit Platform</title>
+  <link rel="stylesheet" href="css/aetherfield.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- toast notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Landing/Login Page -->
+    <div id="login-page" class="page">
+      <!-- Navbar -->
+      <nav class="navbar">
+        <div class="nav-brand">
+          <h2 data-i18n="appName">Guardian</h2>
+        </div>
+        <div class="nav-links">
+          <a href="#features" class="nav-link" data-i18n="features">Features</a>
+          <a href="#about" class="nav-link" data-i18n="about">About</a>
+          <a href="#" class="nav-link" data-i18n="documentation">Documentation</a>
+        </div>
+        <div class="nav-right">
+          <div class="lang-selector">
+            <select id="landing-language-select" title="Language">
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+              <option value="fr">FR</option>
+              <option value="it">IT</option>
+            </select>
+          </div>
+          <a href="#" id="nav-signin" class="btn btn-ghost" data-i18n="signIn">Sign In</a>
+          <a href="#" id="nav-getstarted" class="btn btn-primary" data-i18n="getStarted">Get Started</a>
+        </div>
+      </nav>
+
+      <!-- Hero Section -->
+      <section class="hero" id="hero-section">
+        <h1 data-i18n-html="heroTitle">AI Ethics Compliance,<br>built for research</h1>
+        <p data-i18n="heroSubtitle">Track bias, ensure fairness, and accelerate ML model compliance—with clarity and confidence.</p>
+        <div class="hero-buttons">
+          <button id="hero-signin" class="btn btn-primary" data-i18n="signIn">Sign In</button>
+          <button id="hero-learn" class="btn btn-secondary" data-i18n="learnMore">Learn More</button>
+        </div>
+
+        <!-- Preview Card -->
+        <div class="hero-preview">
+          <div class="preview-card">
+            <div class="preview-header">
+              <span class="accent-badge" data-i18n="overview">Dashboard</span>
+              <span style="color: var(--text-muted); font-size: 14px;" data-i18n="welcomeSubtext">Your daily compliance metrics</span>
+            </div>
+            <div class="preview-stats">
+              <div class="preview-stat">
+                <div class="preview-stat-value">94%</div>
+                <div class="preview-stat-label" data-i18n="avgCompliance">Avg Compliance</div>
+              </div>
+              <div class="preview-stat">
+                <div class="preview-stat-value" style="background: var(--accent-yellow); padding: 8px 16px; border-radius: 8px;">12</div>
+                <div class="preview-stat-label" data-i18n="totalModels">Models Audited</div>
+              </div>
+              <div class="preview-stat">
+                <div class="preview-stat-value">0.89</div>
+                <div class="preview-stat-label" data-i18n="fairness">Fairness Score</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features-section" id="features">
+        <h2 data-i18n-html="featuresTitle">Everything you need to audit,<br>model, and act on AI ethics</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="feature-number">001</span>
+            <h4 data-i18n="trackTitle">Track</h4>
+            <p data-i18n="trackDesc">Monitor bias metrics and fairness scores across all your ML models in one place.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-number">002</span>
+            <h4 data-i18n="modelTitle">Model</h4>
+            <p data-i18n="modelDesc">Upload and analyze models from any framework—PyTorch, TensorFlow, scikit-learn.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-number">003</span>
+            <h4 data-i18n="reportTitle">Report</h4>
+            <p data-i18n="reportDesc">Generate comprehensive compliance reports aligned with CERN AI ethics guidelines.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-number">004</span>
+            <h4 data-i18n="actTitle">Act</h4>
+            <p data-i18n="actDesc">Get actionable recommendations to improve model fairness and reduce bias.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Login Form (Hidden by default, shown when Sign In clicked) -->
+      <div id="login-form-container" class="auth-page hidden">
+        <div class="auth-container">
+          <div class="auth-header">
+            <h1 data-i18n="signIn">Welcome back</h1>
+            <p data-i18n="appTagline">Sign in to your Guardian account</p>
+          </div>
+          <div class="auth-card">
+            <form id="login-form" class="auth-form">
+              <div class="form-group">
+                <label for="login-email" data-i18n="email">Email</label>
+                <input type="email" id="login-email" name="email" required placeholder="your@email.com">
+              </div>
+              <div class="form-group">
+                <label for="login-password" data-i18n="password">Password</label>
+                <input type="password" id="login-password" name="password" required placeholder="••••••••">
+              </div>
+              <div class="form-group form-checkbox">
+                <label>
+                  <input type="checkbox" id="remember-me" name="remember">
+                  <span data-i18n="rememberMe">Remember me</span>
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary btn-loading" id="login-btn">
+                <span class="btn-text" data-i18n="signIn">Sign In</span>
+                <span class="btn-spinner"></span>
+              </button>
+              <p class="form-error" id="login-error"></p>
+            </form>
+            <p class="auth-footer">
+              <span data-i18n="noAccount">Don't have an account?</span>
+              <a href="#" id="show-register" data-i18n="signUp">Sign Up</a>
+            </p>
+          </div>
+          <p style="text-align: center; margin-top: 1.5rem;">
+            <a href="#" id="back-to-landing" style="color: var(--text-secondary);" data-i18n="backToHome">← Back to home</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="register-page" class="page hidden">
+      <div class="auth-page">
+        <div class="auth-container">
+          <div class="auth-header">
+            <h1 data-i18n="signUp">Create account</h1>
+            <p data-i18n="appTagline">Start auditing your ML models today</p>
+          </div>
+          <div class="auth-card">
+            <form id="register-form" class="auth-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="register-firstname" data-i18n="firstName">First Name</label>
+                  <input type="text" id="register-firstname" name="firstName" required placeholder="John">
+                </div>
+                <div class="form-group">
+                  <label for="register-lastname" data-i18n="lastName">Last Name</label>
+                  <input type="text" id="register-lastname" name="lastName" required placeholder="Doe">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="register-email" data-i18n="email">Email</label>
+                <input type="email" id="register-email" name="email" required placeholder="your@email.com">
+              </div>
+              <div class="form-group">
+                <label for="register-password" data-i18n="password">Password</label>
+                <input type="password" id="register-password" name="password" required placeholder="••••••••" minlength="8">
+              </div>
+              <div class="form-group">
+                <label for="register-confirm" data-i18n="confirmPassword">Confirm Password</label>
+                <input type="password" id="register-confirm" name="confirm" required placeholder="••••••••">
+              </div>
+              <button type="submit" class="btn btn-primary btn-loading" id="register-btn">
+                <span class="btn-text" data-i18n="signUp">Create Account</span>
+                <span class="btn-spinner"></span>
+              </button>
+              <p class="form-error" id="register-error"></p>
+            </form>
+            <p class="auth-footer">
+              <span data-i18n="haveAccount">Already have an account?</span>
+              <a href="#" id="show-login" data-i18n="signIn">Sign In</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-page" class="page hidden dashboard-page">
+      <nav class="navbar">
+        <div class="nav-brand">
+          <h2 data-i18n="appName">Guardian</h2>
+        </div>
+        <div class="nav-links">
+          <a href="#" class="nav-link active" data-page="overview" data-i18n="overview">Overview</a>
+          <a href="#" class="nav-link" data-page="models" data-i18n="models">Models</a>
+          <a href="#" class="nav-link" data-page="audits" data-i18n="audits">Audits</a>
+        </div>
+        <div class="nav-right">
+          <div class="lang-selector">
+            <select id="language-select" title="Language">
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+              <option value="fr">FR</option>
+              <option value="it">IT</option>
+            </select>
+          </div>
+          <span id="user-email" class="user-email"></span>
+          <button id="logout-btn" class="btn btn-secondary" data-i18n="logout">Logout</button>
+        </div>
+      </nav>
+
+      <main class="main-content">
+        <!-- Overview Section -->
+        <section id="overview-section" class="section">
+          <!-- Welcome Banner -->
+          <div class="welcome-banner">
+            <div class="welcome-content">
+              <p id="greeting-quirky" class="greeting-quirky">Morning! First coffee, then bias detection.</p>
+              <h2 id="welcome-message">Welcome back</h2>
+              <p id="ml-insight" class="ml-insight"></p>
+            </div>
+            <button class="btn btn-primary" id="quick-audit-btn" data-i18n="newAudit">+ New Audit</button>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">[M]</div>
+              <div class="stat-info">
+                <h3 id="stat-models">0</h3>
+                <p data-i18n="totalModels">Total Models</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">[A]</div>
+              <div class="stat-info">
+                <h3 id="stat-audits">0</h3>
+                <p data-i18n="totalAudits">Total Audits</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">[C]</div>
+              <div class="stat-info">
+                <h3 id="stat-compliance">0%</h3>
+                <p data-i18n="avgCompliance">Avg Compliance</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">[R]</div>
+              <div class="stat-info">
+                <h3 id="stat-running">0</h3>
+                <p data-i18n="runningAudits">Running Audits</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="charts-grid">
+            <div class="chart-card">
+              <h3 data-i18n="complianceDistribution">Compliance Distribution</h3>
+              <canvas id="compliance-chart"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3 data-i18n="recentAuditResults">Recent Audit Scores</h3>
+              <canvas id="audits-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Recent Audits Table -->
+          <div class="table-container" style="margin-top: 2rem;">
+            <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-light);">
+              <h3 style="font-family: var(--font-sans); font-size: 1.1rem; font-weight: 600;" data-i18n="recentAudits">Recent Audits</h3>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="model">Model</th>
+                  <th data-i18n="type">Type</th>
+                  <th data-i18n="status">Status</th>
+                  <th data-i18n="compliance">Compliance</th>
+                  <th data-i18n="date">Date</th>
+                  <th data-i18n="actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recent-audits-table">
+                <!-- filled by js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Models Section -->
+        <section id="models-section" class="section hidden">
+          <div class="section-header">
+            <h2 data-i18n="mlModels">ML Models</h2>
+            <button id="upload-model-btn" class="btn btn-primary" data-i18n="uploadModel">+ Upload Model</button>
+          </div>
+
+          <div class="features-grid" id="models-grid">
+            <!-- filled by js -->
+          </div>
+        </section>
+
+        <!-- Audits Section -->
+        <section id="audits-section" class="section hidden">
+          <div class="section-header">
+            <h2 data-i18n="auditHistory">Audit History</h2>
+            <div class="filter-controls">
+              <select id="audit-status-filter">
+                <option value="" data-i18n="allStatus">All Status</option>
+                <option value="completed" data-i18n="completed">Completed</option>
+                <option value="running" data-i18n="running">Running</option>
+                <option value="pending" data-i18n="pending">Pending</option>
+                <option value="failed" data-i18n="failed">Failed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th data-i18n="model">Model</th>
+                  <th data-i18n="type">Type</th>
+                  <th data-i18n="status">Status</th>
+                  <th data-i18n="biasScore">Bias Score</th>
+                  <th data-i18n="fairness">Fairness</th>
+                  <th data-i18n="compliance">Compliance</th>
+                  <th data-i18n="date">Date</th>
+                  <th data-i18n="actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="audits-table">
+                <!-- filled by js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="upload-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 data-i18n="uploadMLModel">Upload ML Model</h3>
+          <button class="modal-close" id="close-upload-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="upload-form" class="auth-form">
+            <div class="form-group">
+              <label for="model-name" data-i18n="modelName">Model Name</label>
+              <input type="text" id="model-name" name="name" required data-i18n-placeholder="modelNamePlaceholder" placeholder="e.g., Credit Risk Classifier v2">
+            </div>
+            <div class="form-group">
+              <label for="model-framework" data-i18n="framework">Framework</label>
+              <select id="model-framework" name="framework" style="width: 100%; padding: 14px 16px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 15px;">
+                <option value="sklearn">Scikit-learn</option>
+                <option value="pytorch">PyTorch</option>
+                <option value="tensorflow">TensorFlow</option>
+                <option value="onnx">ONNX</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label data-i18n="modelFile">Model File</label>
+              <div class="file-dropzone" id="file-dropzone">
+                <input type="file" id="model-file" name="model" accept=".pkl,.joblib,.h5,.pt,.pth,.onnx,.pb,.zip" hidden>
+                <div class="file-dropzone-icon">📁</div>
+                <p style="font-weight: 500; margin-bottom: 0.25rem;" data-i18n="dragDrop">Drag & drop your model file here</p>
+                <p style="font-size: 14px; color: var(--text-muted);" data-i18n="orClickBrowse">or click to browse</p>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 1rem;" data-i18n="supportedFormats">.pkl, .joblib, .h5, .pt, .pth, .onnx, .pb, .zip</p>
+                <p id="selected-file-name" style="font-weight: 500; color: var(--accent-blue); margin-top: 0.5rem;"></p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="cancel-upload" data-i18n="cancel">Cancel</button>
+              <button type="submit" class="btn btn-primary" data-i18n="upload">Upload Model</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audit Detail Modal -->
+    <div id="audit-modal" class="modal">
+      <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header">
+          <h3 data-i18n="auditResults">Audit Results</h3>
+          <button class="modal-close" id="close-audit-modal">&times;</button>
+        </div>
+        <div class="modal-body" id="audit-detail-content">
+          <!-- filled by js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

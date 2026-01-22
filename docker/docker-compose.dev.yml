@@ -1,0 +1,56 @@
+# dev compose - mounts source for hot reload
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: guardian-postgres-dev
+    environment:
+      POSTGRES_DB: guardian_db
+      POSTGRES_USER: guardian
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ../postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    container_name: guardian-backend-dev
+    environment:
+      - NODE_ENV=development
+      - PORT=3010
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=guardian_db
+      - DB_USER=guardian
+      - DB_PASSWORD=changeme
+      - JWT_SECRET=dev-secret
+      - ML_SERVICE_URL=http://ml-audit:8000
+    ports:
+      - "3010:3010"
+    volumes:
+      - ../backend/src:/app/src
+      - model_uploads:/app/uploads
+    depends_on:
+      - postgres
+    command: npm run dev
+
+  ml-audit:
+    build:
+      context: ..
+      dockerfile: docker/ml-audit.Dockerfile
+    container_name: guardian-ml-audit-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../ml-audit:/app
+      - model_uploads:/app/uploads:ro
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+volumes:
+  postgres_dev_data:
+  model_uploads:
